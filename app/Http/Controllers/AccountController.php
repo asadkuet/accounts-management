@@ -9,7 +9,9 @@ use Illuminate\Support\Facades\Auth;
 class AccountController extends Controller
 {
     public function index(){
-        $data = DB::table('accounts')->get();
+        $data = DB::table('accounts')
+            ->where('created_by', Auth::id())
+            ->get();
         return view('accounts.index', ["data"=>$data]);
     }
     public function create(){

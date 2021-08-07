@@ -9,7 +9,12 @@ use Illuminate\Support\Facades\Auth;
 class TransactionController extends Controller
 {
     public function index(){
-        $data = DB::table('accounts')->get();
+        $data = DB::table('transactions as t')
+            ->join('accounts as a', 'a.account_no', '=', 't.from_account')
+            ->join('persons as p', 'p.id', '=', 't.to_account')
+            ->where('t.created_by', Auth::id())
+            ->select('t.*', 'a.name as from_account_name', 'p.name as to_account_name', 'p.user_name' )
+            ->get();
         return view('transactions.index', ["data"=>$data]);
     }
     public function createSend(){
@@ -19,29 +24,42 @@ class TransactionController extends Controller
         $persons = DB::table('persons')
                     ->where('created_by', Auth::id())
                     ->get();
-        return view('transactions.send', ['accounts'=>$accounts, 'persons'=>$persons]);
+        $purposes = DB::table('purposes')
+                    ->where('type', 'send')
+                    ->where('created_by', Auth::id())
+                    ->get();
+        return view('transactions.send', ['accounts'=>$accounts, 'persons'=>$persons, 'purposes'=>$purposes]);
     }
-    public function store(Request $request){
+    public function storeSend(Request $request){
         $validated = $request->validate([
-            'account_no' => 'nullable|unique:accounts,account_no|max:20',
-            'name' => 'required|max:32',
-            'type' => 'required|exists:account_types,id',
-            'balance' => 'nullable|numeric|min:0'
+            'txn_date' => 'required|date|date_format:Y-m-d|before_or_equal:today',
+            'from_account' => 'required|exists:accounts,account_no',
+            'to_account' => 'required|exists:persons,id',
+            'amount' => 'required|numeric|min:0',
+            'description' => 'required|min:3|max:50',
+            'purpose' => 'nullable|exists:purposes,id'
         ]);
+        
+        /* need update: 
+                check if both accounts belongs to logged-in user */
 
-        $inserted = DB::table('accounts')
+        $inserted = DB::table('transactions')
                     ->insert([
-                        "account_no" => $request->account_no,
-                        "name" => $request->name,
-                        "type" => $request->type,
-                        "balance" => $request->balance,
+                        "txn_date" => $request->txn_date,
+                        "txn_type" => 2,
+                        "from_account" => $request->from_account,
+                        "to_account" => $request->to_account,
+                        "amount" => $request->amount,
+                        "description" => $request->description,
+                        "purpose" => $request->purpose,
+                        "gateway" => $request->gateway,
                         "created_by" => Auth::id(),
                     ]);
         if($inserted){
-            notify()->success('Account created successfully', 'Success');
-            return redirect()->route('accounts');
+            notify()->success('Transaction created successfully', 'Success');
+            return redirect()->route('transactions');
         }
-        else return back()->withInput()->with("errors",  ["Account Creation Failed!"]);
+        else return back()->withInput()->with("errors",  ["Transaction Creation Failed!"]);
 
     }
 }
