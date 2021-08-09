@@ -36,10 +36,10 @@
                     </div>
                     
                     <!-- Username -->
-                    <div class="mt-4">
+                    {{-- <div class="mt-4">
                         <x-label for="user_name" :value="__('Username')" />
                         <x-input id="user_name" :placeholder="__('Username (optional)')" class="block mt-1 w-full uppercase" type="text" name="user_name" :value="old('user_name')" autofocus />
-                    </div>
+                    </div> --}}
 
                     <!-- company -->
                     <div class="mt-4">

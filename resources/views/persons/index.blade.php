@@ -20,11 +20,14 @@
                 <table class="w-full table-auto">
                     <thead class="justify-between">
                         <tr class="bg-green-600 border-2 border-green-600">
-                            <th class="px-2 py-2">
+                            {{-- <th class="px-2 py-2">
                                 <span class="text-gray-100 font-semibold">Username</span>
+                            </th> --}}
+
+                            <th class="px-2 py-2">
+                                <span class="text-gray-100 font-semibold">S.L</span>
                             </th>
 
-                            </th> 
                             <th class="px-2 py-2">
                                 <span class="text-gray-100 font-semibold">Name</span>
                             </th>
@@ -49,8 +52,12 @@
                     <tbody class="bg-gray-200">
                         @foreach ($data as $item)
                             <tr class="bg-white border-2 border-gray-200">                                
-                                <td class="px-2 py-2 border-2 border-gray-200">
+                                {{-- <td class="px-2 py-2 border-2 border-gray-200">
                                     <span class="text-right font-semibold">{{ $item->user_name }}</span>
+                                </td> --}}
+                                
+                                <td class="px-2 py-2 border-2 border-gray-200">
+                                    <span class="text-right font-semibold">{{ $loop->iteration }}</span>
                                 </td>
                                 
                                 <td class="px-2 py-2 border-2 border-gray-200">

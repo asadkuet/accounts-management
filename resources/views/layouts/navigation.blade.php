@@ -23,6 +23,13 @@
                         {{ __('Send Money') }}
                     </x-nav-link>
                 </div>
+                
+                <!-- Receive Money -->
+                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                    <x-nav-link :href="route('createReceiveMoney')" :active="request()->routeIs('createReceiveMoney')">
+                        {{ __('Receive Money') }}
+                    </x-nav-link>
+                </div>
 
                 <!-- Accounts Dropdown -->
                 <div class="hidden sm:flex sm:items-center sm:ml-6">
@@ -41,8 +48,11 @@
                             <x-dropdown-link :href="route('accounts')">
                                 {{ __('All Accounts') }}
                             </x-dropdown-link>
-                            <x-dropdown-link :href="route('createAccount')">
-                                {{ __('Create Account') }}
+                            <x-dropdown-link :href="route('createAccount', 1)">
+                                {{ __('Create My Account') }}
+                            </x-dropdown-link>
+                            <x-dropdown-link :href="route('createAccount', 2)">
+                                {{ __('Create Other\'s Account') }}
                             </x-dropdown-link>
                         </x-slot>
                     </x-dropdown>
@@ -127,6 +137,12 @@
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('createSendMoney')" :active="request()->routeIs('createSendMoney')">
                 {{ __('Send Money') }}
+            </x-responsive-nav-link>
+        </div>
+
+        <div class="pt-2 pb-3 space-y-1">
+            <x-responsive-nav-link :href="route('createReceiveMoney')" :active="request()->routeIs('createReceiveMoney')">
+                {{ __('Receive Money') }}
             </x-responsive-nav-link>
         </div>
 

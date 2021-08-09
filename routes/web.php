@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\PersonController;
 use App\Http\Controllers\TransactionController;
@@ -21,13 +22,11 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
 
     /* Accounts */
     Route::get('/accounts', [AccountController::class, 'index'])->name('accounts');
-    Route::get('/account/create', [AccountController::class, 'create'])->name('createAccount');
+    Route::get('/account/create/{owner_type}', [AccountController::class, 'create'])->name('createAccount');
     Route::post('/account/create', [AccountController::class, 'store'])->name('storeAccount');
 
     /* Persons */
@@ -40,7 +39,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/transaction/send', [TransactionController::class, 'createSend'])->name('createSendMoney');
     Route::get('/transaction/receive', [TransactionController::class, 'createReceive'])->name('createReceiveMoney');
     
-    Route::post('/transaction/storeSendMoney', [TransactionController::class, 'storeSend'])->name('storeSendMoney');
+    Route::post('/transaction/storeTransaction', [TransactionController::class, 'storeTransaction'])->name('storeTransaction');
+    Route::post('/transaction/storeTransaction', [TransactionController::class, 'storeTransaction'])->name('storeTransaction');
 });
 
 require __DIR__.'/auth.php';

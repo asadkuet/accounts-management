@@ -4,7 +4,7 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight py-1">
                 {{ __('All Transactions') }}
             </h2>
-            <a class="ml-auto inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 active:bg-green-900 focus:outline-none focus:border-green-900 focus:ring ring-green-300 disabled:opacity-25 transition ease-in-out duration-150" href="{{ route('createAccount') }}">
+            <a class="ml-auto inline-flex items-center px-4 py-2 bg-green-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 active:bg-green-900 focus:outline-none focus:border-green-900 focus:ring ring-green-300 disabled:opacity-25 transition ease-in-out duration-150" href="{{ route('transactions') }}">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
@@ -83,19 +83,24 @@
                                 </td>
                                 
                                 <td class="px-2 py-2 border-2 border-gray-200" align="center">
-                                    <span>{{ $item->from_account_name }}</span>
+                                    @if($item->txn_type == 2)
+                                        <span><b>{{ $item->from_account_name }} <br/> ( {{ $item->to_user_name }} )</b></span>
+                                    @else <span>{{ $item->from_account_name }} <br/> ( {{ $item->to_user_name }} )</span>
+                                    @endif
                                 </td>
                                 
                                 <td class="px-2 py-2 border-2 border-gray-200" align="center">
-                                    <span>{{ $item->to_account_name }}</span> <br/>
-                                    <span>( {{ $item->user_name }} )</span>
+                                    @if($item->txn_type == 1)
+                                        <span><b>{{ $item->to_account_name }} <br/> ( {{ $item->to_user_name }} ) </b></span>
+                                    @else <span>{{ $item->to_account_name }} <br/> ( {{ $item->to_user_name }} )</span>
+                                    @endif                                    
                                 </td>
                                 
                                 <td class="px-2 py-2 border-2 border-gray-200" align="center">                                    
                                     @if($item->txn_type == 2)
-                                        <span class="text-red-600">-{{ $item->amount }}</span>
+                                        <span class="text-red-600">-{{ preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $item->amount) }}</span>
                                     @elseif($item->txn_type == 1)
-                                        <span class="text-green-600">+{{ $item->amount }}</span>
+                                        <span class="text-green-600">+{{ preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $item->amount) }}</span>
                                     @endif
                                 </td>
                                 

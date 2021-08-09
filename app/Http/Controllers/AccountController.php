@@ -14,30 +14,40 @@ class AccountController extends Controller
             ->get();
         return view('accounts.index', ["data"=>$data]);
     }
-    public function create(){
-        return view('accounts.create');
+    public function create($owner_type){
+        $persons = DB::table('persons')
+                    ->where('created_by', Auth::id())
+                    ->get();
+        return view('accounts.create', ['owner_type'=>$owner_type, 'persons'=>$persons]);
     }
     public function store(Request $request){
         $validated = $request->validate([
-            'account_no' => 'nullable|unique:accounts,account_no|max:20',
+            'user_name' => 'nullable|unique:accounts,user_name|max:20',
             'name' => 'required|max:32',
-            'type' => 'required|exists:account_types,id',
             'balance' => 'nullable|numeric|min:0'
         ]);
 
-        $inserted = DB::table('accounts')
-                    ->insert([
-                        "account_no" => $request->account_no,
-                        "name" => $request->name,
-                        "type" => $request->type,
-                        "balance" => $request->balance,
-                        "created_by" => Auth::id(),
-                    ]);
+        $inserted = $this->insertAccounts($request->account_no, $request->user_name, $request->name, $request->type, $request->balance, $request->person_id );
         if($inserted){
             notify()->success('Account created successfully', 'Success');
             return redirect()->route('accounts');
         }
         else return back()->withInput()->with("errors",  ["Account Creation Failed!"]);
 
+    }
+    public function insertAccounts($account_no, $user_name, $name, $type, $balance, $person_id){
+        $inserted = DB::table('accounts')
+                        ->insert([
+                            "account_no" => $account_no,
+                            "user_name" => $user_name,
+                            "name" => $name,
+                            "type" => $type ? $type : 1,
+                            "balance" => $balance ? $balance : 0,
+                            "person_id" => $person_id,
+                            "created_by" => Auth::id(),
+                        ]);
+        if($inserted !== FALSE)
+            return true;
+        else return false;
     }
 }
