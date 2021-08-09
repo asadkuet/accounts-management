@@ -30,7 +30,7 @@
                         </div>
                         <div class="flex-1 text-right md:text-center">
                             <h5 class="font-bold uppercase text-gray-600">Balance</h5>
-                            <h3 class="font-bold text-3xl">৳ {{$balance}} <span class="text-green-500"><i class="fas fa-caret-up"></i></span></h3>
+                            <h3 class="font-bold text-3xl">৳ {{preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $balance)}} <span class="text-green-500"><i class="fas fa-caret-up"></i></span></h3>
                         </div>
                     </div>
                 </div>
@@ -45,7 +45,7 @@
                         </div>
                         <div class="flex-1 text-right md:text-center">
                             <h5 class="font-bold uppercase text-gray-600">Sent</h5>
-                            <h3 class="font-bold text-3xl">৳ {{$total_sent}} <span class="text-pink-500"><i class="fas fa-exchange-alt"></i></span></h3>
+                            <h3 class="font-bold text-3xl">৳ {{preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $total_sent)}} <span class="text-pink-500"><i class="fas fa-exchange-alt"></i></span></h3>
                         </div>
                     </div>
                 </div>
@@ -60,7 +60,7 @@
                         </div>
                         <div class="flex-1 text-right md:text-center">
                             <h5 class="font-bold uppercase text-gray-600">Received</h5>
-                            <h3 class="font-bold text-3xl">৳ {{$total_received}} <span class="text-yellow-600"><i class="fas fa-caret-up"></i></span></h3>
+                            <h3 class="font-bold text-3xl">৳ {{preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $total_received)}} <span class="text-yellow-600"><i class="fas fa-caret-up"></i></span></h3>
                         </div>
                     </div>
                 </div>
