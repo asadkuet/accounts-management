@@ -18,10 +18,12 @@ use App\Http\Controllers\TransactionController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('dashboard');
+    // return view('welcome');
 });
 
 Route::middleware(['auth'])->group(function () {
+    
     Route::get('/dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
 
     /* Accounts */
