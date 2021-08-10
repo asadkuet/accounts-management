@@ -157,6 +157,21 @@
             </div>
         </div>
 
+        <!-- Responsive Accounts Options -->
+        <div class="pt-4 pb-1 border-t border-gray-200">
+            <div class="px-4">
+                <div class="font-medium text-base text-gray-800">Persons</div>
+            </div>
+
+            <div class="mt-3 space-y-1">
+                <x-responsive-nav-link :href="route('persons')"> All Persons </x-responsive-nav-link>
+            </div>
+
+            <div class="mt-3 space-y-1">
+                <x-responsive-nav-link :href="route('createPerson')"> Create Person </x-responsive-nav-link>
+            </div>
+        </div>
+
         <!-- Responsive Settings Options -->
         <div class="pt-4 pb-1 border-t border-gray-200">
             <div class="px-4">
