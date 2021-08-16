@@ -9,11 +9,18 @@ use Illuminate\Validation\ValidationException;
 
 class TransactionController extends Controller
 {
-    public function index(){
+    public function index(Request $request){
+        if ($request->has('account')) {
+            $account = $request->account;
+        }
         $data = DB::table('transactions as t')
             ->join('accounts as a', 'a.id', '=', 't.from_account')
             ->join('accounts as b', 'b.id', '=', 't.to_account')
             ->where('t.created_by', Auth::id())
+            ->when($request->has('account'), function ($query, $account) {
+                return $query->where('from_account', $account)
+                            ->OrWhere('to_account', $account);
+            })
             ->select('t.*', 'a.name as from_account_name', 'b.name as to_account_name', 'a.user_name as from_user_name', 'b.user_name as to_user_name' )
             ->orderBy('id', 'desc')
             ->get();

@@ -39,9 +39,9 @@
                                 <span class="text-gray-100 font-semibold">Txn Date</span>
                             </th>
                             
-                            <th class="px-2 py-2">
+                            {{-- <th class="px-2 py-2">
                                 <span class="text-gray-100 font-semibold">Type</span>
-                            </th>        
+                            </th>         --}}
                             
                             <th class="px-2 py-2">
                                 <span class="text-gray-100 font-semibold">From Account</span>
@@ -53,7 +53,11 @@
                             </th>        
                             
                             <th class="px-2 py-2">
-                                <span class="text-gray-100 font-semibold">Amount</span>
+                                <span class="text-gray-100 font-semibold">Received Amount</span>
+                            </th>        
+                            
+                            <th class="px-2 py-2">
+                                <span class="text-gray-100 font-semibold">Sent Amount</span>
                             </th>        
                             
                             <th class="px-2 py-2">
@@ -70,7 +74,17 @@
                         </tr>
                     </thead>
                     <tbody class="bg-gray-200">
+                        @php 
+                            $total_sent = 0; 
+                            $total_received = 0; 
+                        @endphp
                         @foreach ($data as $item)
+                            @php
+                                if($item->txn_type == 1)
+                                    $total_received += $item->amount; 
+                                else if($item->txn_type == 2)
+                                    $total_sent += $item->amount; 
+                            @endphp    
                             <tr class="bg-white border-2 border-gray-200">
                                 
                                 <td class="px-2 py-2 border-2 border-gray-200">
@@ -78,36 +92,48 @@
                                 </td>
                                 
                                 <td class="px-2 py-2 border-2 border-gray-200">
-                                    <span class="text-right font-semibold">{{ \Carbon\Carbon::parse($item->txn_date)->format('j F, Y') }}</span>
+                                    <span class="text-right font-semibold">{{ \Carbon\Carbon::parse($item->txn_date)->format('j M, Y') }}</span>
                                 </td>
                                 
-                                <td class="px-2 py-2 border-2 border-gray-200" align="center">
+                                {{-- <td class="px-2 py-2 border-2 border-gray-200" align="center">
                                     @if($item->txn_type == 2)
                                         <span>SEND</span>
                                     @elseif($item->txn_type == 1)
                                         <span>RECEIVE</span>
                                     @endif
+                                </td> --}}
+                                
+                                <td class="px-2 py-2 border-2 border-gray-200" align="center">
+                                    <a href="{{ route('transactions', ['account'=> $item->from_account]) }}" class="underline ">
+                                        @if($item->txn_type == 2)
+                                            <span><b>{{ $item->from_account_name }} <br/> ( {{ $item->to_user_name }} )</b></span>
+                                        @else <span>{{ $item->from_account_name }} <br/> ( {{ $item->to_user_name }} )</span>
+                                        @endif
+                                    </a>
                                 </td>
                                 
                                 <td class="px-2 py-2 border-2 border-gray-200" align="center">
-                                    @if($item->txn_type == 2)
-                                        <span><b>{{ $item->from_account_name }} <br/> ( {{ $item->to_user_name }} )</b></span>
-                                    @else <span>{{ $item->from_account_name }} <br/> ( {{ $item->to_user_name }} )</span>
-                                    @endif
+                                    <a href="{{ route('transactions', ['account'=> $item->to_account]) }}"  class="underline ">
+                                        @if($item->txn_type == 1)
+                                            <span><b>{{ $item->to_account_name }} <br/> ( {{ $item->to_user_name }} ) </b></span>
+                                        @else <span>{{ $item->to_account_name }} <br/> ( {{ $item->to_user_name }} )</span>
+                                        @endif  
+                                    </a>                                  
                                 </td>
                                 
-                                <td class="px-2 py-2 border-2 border-gray-200" align="center">
+                                <td class="px-2 py-2 border-2 border-gray-200" align="center">                                    
                                     @if($item->txn_type == 1)
-                                        <span><b>{{ $item->to_account_name }} <br/> ( {{ $item->to_user_name }} ) </b></span>
-                                    @else <span>{{ $item->to_account_name }} <br/> ( {{ $item->to_user_name }} )</span>
-                                    @endif                                    
+                                        <span class="text-green-600">+{{ preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $item->amount) }}</span>
+                                    @elseif($item->txn_type == 2)
+                                        <span class="text-green-600"> - </span>
+                                    @endif
                                 </td>
                                 
                                 <td class="px-2 py-2 border-2 border-gray-200" align="center">                                    
                                     @if($item->txn_type == 2)
                                         <span class="text-red-600">-{{ preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $item->amount) }}</span>
                                     @elseif($item->txn_type == 1)
-                                        <span class="text-green-600">+{{ preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $item->amount) }}</span>
+                                        <span class="text-red-600"> - </span>
                                     @endif
                                 </td>
                                 
@@ -123,7 +149,30 @@
                                     <span> {{ $item->created_at }} </span>
                                 </td>                    
                             </tr>   
-                        @endforeach                          
+                        @endforeach    
+                        
+                        <tr class="bg-gray-100 border-2 border-gray-200">
+                                
+                            <td class="px-2 py-2 border-2 border-gray-200" colspan="4" align="right">
+                                <span class="text-right font-bold">Total: </span>
+                            </td>
+                            
+                            <td class="px-2 py-2 border-2 border-gray-200" align="center">               
+                                <span class="text-green-600 font-bold">+{{ preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $total_received) }}</span>
+                            </td>
+                            
+                            <td class="px-2 py-2 border-2 border-gray-200" align="center">                                    
+                                <span class="text-red-600 font-bold">-{{ preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $total_sent) }}</span>
+                            </td>
+                            
+                            <td class="px-2 py-2 border-2 border-gray-200" align="left" colspan="3">
+                                @if($total_received - $total_sent > 0)
+                                    <span class="text-green-600 font-bold">Balance: {{ preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $total_received - $total_sent) }}</span>
+                                @else    
+                                    <span class="text-red-600 font-bold">Balance: {{ preg_replace("/(\d+?)(?=(\d\d)+(\d)(?!\d))(\.\d+)?/i", "$1,", $total_received - $total_sent) }}</span>
+                                @endif
+                            </td>              
+                        </tr> 
                     </tbody>
                 </table>         
             </div>
