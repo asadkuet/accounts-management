@@ -10,9 +10,9 @@ use Illuminate\Validation\ValidationException;
 class TransactionController extends Controller
 {
     public function index(Request $request){
-        if ($request->has('account')) {
-            $account = $request->account;
-        }
+        
+        $account = ($request->has('account')) ? $request->account : FALSE;
+        
         
         $data = DB::table('transactions as t')
             ->join('accounts as a', 'a.id', '=', 't.from_account')
