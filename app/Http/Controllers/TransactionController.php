@@ -24,7 +24,7 @@ class TransactionController extends Controller
                     ->OrWhere('t.to_account', $account);
             })
             ->select('t.*', 'a.name as from_account_name', 'b.name as to_account_name', 'a.user_name as from_user_name', 'b.user_name as to_user_name')
-            ->orderBy('id', 'desc')
+            ->orderBy('txn_date', 'desc')
             ->get();
         return view('transactions.index', ["data" => $data]);
     }
