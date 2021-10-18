@@ -24,7 +24,7 @@ class TransactionController extends Controller
                     ->OrWhere('t.to_account', $account);
             })
             ->select('t.*', 'a.name as from_account_name', 'b.name as to_account_name', 'a.user_name as from_user_name', 'b.user_name as to_user_name')
-            ->orderBy('txn_date', 'desc')
+            ->orderBy('id', 'desc')
             ->get();
         return view('transactions.index', ["data" => $data]);
     }
@@ -72,7 +72,7 @@ class TransactionController extends Controller
     }
     public function storeTransaction(Request $request)
     {
-        $validated = $request->validate([
+        $request->validate([
             'txn_type' => 'required',
             'txn_date' => 'required|date|date_format:Y-m-d|before_or_equal:today',
             'from_account' => 'required|exists:accounts,id',

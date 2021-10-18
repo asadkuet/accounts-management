@@ -137,7 +137,7 @@
                                     @endif
                                 </td>
                                 
-                                <td class="px-2 py-2 border-2 border-gray-200" align="center">
+                                <td class="px-2 py-2 border-2 border-gray-200" align="left">
                                     <span>{{ $item->description }}</span>
                                 </td>
 
